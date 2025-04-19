@@ -116,17 +116,17 @@ NimModel <- nimbleCode({
     
     d2[i,1:J] <- (s[i,1] - X[1:J,1])^2 + (s[i,2] - X[1:J,2])^2
     lam[i,1:J] <- GetDetectionRate(s = s[i,1:2], 
-	                               X = X[1:J,1:2], 
+	                           X = X[1:J,1:2], 
                                    J = J, 
                                    sigma = sig,
                                    lam0 = lam0,
                                    z = z[i])
 
-	# Latent capture histories
+    # Model for all capture histories
     y.full[i,1:J] ~ dPoissonVector(lambda = lam[i,1:J] * KT[1:J])
     
-	# Observed capture histories
-	for(j in 1:J) {
+    # Observed capture histories
+    for(j in 1:J) {
       y.obs[i,j] ~ dbin(id.prob, y.full[i,j])  # Binomial model for ID events
     }
 
