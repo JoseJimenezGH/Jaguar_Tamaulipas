@@ -1,1 +1,1 @@
-# Jaguar_Tamaulipas
+Jaguar density estimation using random thinning spatial capture-recapture (rt-SCR)
