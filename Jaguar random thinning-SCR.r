@@ -11,7 +11,7 @@
 #==============================================================================#
 
 # Set working directory
-setwd('C:/Users/Jose_/OneDrive/00 Proyecto Jaguar-Zavdiel/Código')
+setwd('C:/...')
 
 # Load required libraries for analysis
 library(scrbook)    # Library for spatial capture-recapture modeling
