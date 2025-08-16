@@ -17,7 +17,7 @@ setwd('C:/...')
 library(scrbook)    # Library for spatial capture-recapture modeling
 library(coda)       # Library for MCMC diagnostics
 library(mcmcOutput) # Library for MCMC outputs
-library(nimble)     # Framework for hierarchical modeling
+library(nimble)     # Library for hierarchical modeling
 library(terra)      # Spatial data handling
 
 # Load additional functions and scripts
@@ -27,18 +27,18 @@ source("sSampler.r")       # Customized sampler
 ## SETTING AND PLOTING DATA
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Load capture-recapture history data
-lince.ch <- secr::read.capthist("capt.txt", "traps.txt", detector='count', noccasions=91)
+jaguar.ch <- secr::read.capthist("capt.txt", "traps.txt", detector='count', noccasions=91)
 # Note: Removed day 92, leaving only 91 for closed population assumption
 
 # Summarize capture data and test for population closure
-summary(lince.ch)
-secr::closure.test(lince.ch) # Population closure test
+summary(jaguar.ch)
+secr::closure.test(jaguar.ch) # Population closure test
 
 # Rearrange capture data for analysis
-y3d <- aperm(lince.ch, c(1, 3, 2))  # Reorganize capture matrix
+y3d <- aperm(jaguar.ch, c(1, 3, 2))  # Reorganize capture matrix
 
 # Load trap locations and normalize coordinates
-traplocs <- as.matrix(secr::traps(lince.ch))
+traplocs <- as.matrix(secr::traps(jaguar.ch))
 X <- data.matrix(traplocs) / 1000  # Normalize to kilometers
 X[,1] <- X[,1] - mean(X[,1])       # Center X-coordinates
 X[,2] <- X[,2] - mean(X[,2])       # Center Y-coordinates
@@ -56,13 +56,13 @@ M <- 75
 
 # Calculate buffered state space size for irregular trap array
 trapShape <- vect("C:/Users/Jose_/OneDrive/00 Proyecto Jaguar-Zavdiel/Traps.shp")
-buff_trap <- buffer(trapShape, width = 9315) # 3 * sigma buffer size
+buff_trap <- buffer(trapShape, width = 9150) # 3 * sigma buffer size
 buffTrap <- aggregate(buff_trap) # Combine geometries into single polygon
 plot(buffTrap)                   # Plot buffered trap array
 points(trapShape)                # Add original trap locations to the plot
 area <- expanse(buffTrap) / 1e6  # Calculate area in square kilometers
 
-buff <- 9315 / 1000      # Convert buffer to kilometers
+buff <- 9150 / 1000      # Convert buffer to kilometers
 xl <- min(X[,1]) - buff  # Calculate x-axis lower bound
 xu <- max(X[,1]) + buff  # Calculate x-axis upper bound
 yl <- min(X[,2]) - buff  # Calculate y-axis lower bound
@@ -89,10 +89,10 @@ KT <- KT[,4:94]  # Columns representing active/inactive status
 KT <- data.matrix(KT)  # Convert to matrix
 colnames(KT) <- 1:91   # Number of sampling occasions
 # Additional analysis of non-ID capture frequencies
-lince.un <- secr::read.capthist("NID.txt", "traps.txt", detector='count', noccasions=91)
+jaguar.un <- secr::read.capthist("NID.txt", "traps.txt", detector='count', noccasions=91)
 # Load non-ID capture history data with the same number of occasions as ID captures
-summary(lince.un)
-y.un <- aperm(lince.un, c(1, 3, 2))   # Rearrange capture data
+summary(jaguar.un)
+y.un <- aperm(jaguar.un, c(1, 3, 2))   # Rearrange capture data
 nnid <- apply(y.un, c(2, 3), sum)     # Non-ID events across traps and occasions
 sum(nnid)                             # Total number of non-ID events
 nnidd <- apply(nnid, 1, sum)          # Sum of non-ID events by trap
@@ -226,6 +226,9 @@ for(j in 1:J) {
                   type = 'IDSampler', control = list(nnidd = nnidd[j], j = j, M = M), 
                   silent = TRUE)
 }
+
+# sampler to jointly update AC's x,y coordinates
+conf$removeSampler("s")
 ACnodes <- paste0("s[", 1:constants$M, ", 1:2]")
 for(node in ACnodes) {
   conf$addSampler(target = node, type = "RW_block", 
@@ -249,3 +252,4 @@ end.time - start.time2  # Time taken for sampling
 # Summarize MCMC outputs
 summary(mcmcOutput(outNim))
 diagPlot(mcmcOutput(outNim))  # Diagnostic plots
+
