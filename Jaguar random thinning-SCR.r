@@ -82,12 +82,12 @@ symbols(X, circles=tot/1, inches=F, bg="#00000022", fg=NULL, add=T)
 points(X, pch="+", cex=0.8, col="red")# Add trap locations
 
 # Camera trap operation mask
-KT <- read.csv("traps.csv", sep=",")
+KT <- read.csv("Bdata/traps.csv", sep=",")
 KT <- KT[,4:94]  # Columns representing active/inactive status
 KT <- data.matrix(KT)  # Convert to matrix
 colnames(KT) <- 1:91   # Number of sampling occasions
 # Additional analysis of non-ID capture frequencies
-jaguar.un <- secr::read.capthist("NID.txt", "traps.txt", detector='count', noccasions=91)
+jaguar.un <- secr::read.capthist("BData/NID.txt", "BData/traps.txt", detector='count', noccasions=91)
 # Load non-ID capture history data with the same number of occasions as ID captures
 summary(jaguar.un)
 y.un <- aperm(jaguar.un, c(1, 3, 2))   # Rearrange capture data
@@ -199,7 +199,7 @@ str(inits   <-   list(z = zst,              # Latent inclusion indicator
                       sig = sigs,           # Movement parameter
                       id.prob = id.prob.s,  # Detection rate for ID events
                       psi = runif(1, 0, 1), # Inclusion probability
-                      y.full = yis)         # Latent true capture histories
+                      y.full = yis          # Latent true capture histories
 ))
 
 ## PARAMETERS
@@ -253,6 +253,7 @@ end.time - start.time2  # Time taken for sampling
 # Summarize MCMC outputs
 summary(mcmcOutput(outNim))
 diagPlot(mcmcOutput(outNim))  # Diagnostic plots
+
 
 
 
