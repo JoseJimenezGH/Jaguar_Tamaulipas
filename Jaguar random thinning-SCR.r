@@ -148,22 +148,24 @@ NimModel <- nimbleCode({
 ##~~~~~~~~~~~~
 KT<-apply(KT,1,sum)
 ## Constants for the model
-constants <- list(nnid = nnid,  # Non-ID events
-                  J = J,        # Number of traps
-                  M = M,        # Data augmentation size
-                  KT = KT,      # Sampling occasions
-                  area = area)  # State space size
+str(constants <- list(nnid = nnid,         # Non-ID events
+                      J = J,               # Number of traps
+                      M = M,               # Data augmentation size
+                      KT = KT,             # Sampling occasions
+                      area = area          # State space size
+))
 
 ## DATA
 ##~~~~~~
 ## Data for the model
 yred <- apply(yaug, c(1, 2), sum)
-data <- list(y.obs = yred,       # ID capture histories
-             buffer = buff,      # Buffer size
-             zeros = rep(0, M),  # Zero-trick vector
-             xlim = xlim,        # State space x-limits
-             ylim = ylim,        # State space y-limits
-             X = X)              # Trap coordinates
+str(data   <-    list(y.obs = yred,        # ID capture histories
+                      buffer = buff,       # Buffer size
+                      zeros = rep(0, M),   # Zero-trick vector
+                      xlim = xlim,         # State space x-limits
+                      ylim = ylim,         # State space y-limits
+                      X = X                # Trap coordinates
+))
 
 ## INITS
 ##~~~~~~~~
@@ -193,13 +195,14 @@ zst[zst > 0] <- 1  # Individuals with detections
 id.prob.s <- sum(yaug) / (sum(yaug) + sum(nnid))  # Initial ID probability
 
 set.seed(1960)
-inits <- list(z = zst,             # Latent inclusion indicator
-              s = s.start,         # Activity center coordinates
-              lam0 = lam0s,        # Baseline detection rate
-              sig = sigs,          # Movement parameter
-              id.prob = id.prob.s, # Detection rate for ID events
-              psi = runif(1, 0, 1),# Inclusion probability
-              y.full = yis)        # Latent true capture histories
+str(inits   <-   list(z = zst,              # Latent inclusion indicator
+                      s = s.start,          # Activity center coordinates
+                      lam0 = lam0s,         # Baseline detection rate
+                      sig = sigs,           # Movement parameter
+                      id.prob = id.prob.s,  # Detection rate for ID events
+                      psi = runif(1, 0, 1), # Inclusion probability
+                      y.full = yis)         # Latent true capture histories
+))
 
 ## PARAMETERS
 ##~~~~~~~~~~~~
@@ -252,4 +255,5 @@ end.time - start.time2  # Time taken for sampling
 # Summarize MCMC outputs
 summary(mcmcOutput(outNim))
 diagPlot(mcmcOutput(outNim))  # Diagnostic plots
+
 
