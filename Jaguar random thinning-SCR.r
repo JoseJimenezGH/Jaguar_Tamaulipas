@@ -21,14 +21,13 @@ library(nimble)     # Library for hierarchical modeling
 library(terra)      # Spatial data handling
 
 # Load additional functions and scripts
-source('SCR_functions.R')  # Custom SCR-related functions
-source("sSampler.r")       # Customized sampler
+source('Functions/SCR_functions.R')  # Custom SCR-related functions
+source("Functions/sSampler.r")       # Customized sampler
 
 ## SETTING AND PLOTING DATA
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Load capture-recapture history data
-jaguar.ch <- secr::read.capthist("capt.txt", "traps.txt", detector='count', noccasions=91)
-# Note: Removed day 92, leaving only 91 for closed population assumption
+jaguar.ch <- secr::read.capthist("BData/capt.txt", "BData/traps.txt", detector='count', noccasions=91)
 
 # Summarize capture data and test for population closure
 summary(jaguar.ch)
@@ -55,7 +54,7 @@ detections <- sum(y3d)   # Total number of detections
 M <- 75
 
 # Calculate buffered state space size for irregular trap array
-trapShape <- vect("C:/Users/Jose_/OneDrive/00 Proyecto Jaguar-Zavdiel/Traps.shp")
+trapShape <- vect("GIS/Traps.shp")
 buff_trap <- buffer(trapShape, width = 9150) # 3 * sigma buffer size
 buffTrap <- aggregate(buff_trap) # Combine geometries into single polygon
 plot(buffTrap)                   # Plot buffered trap array
@@ -81,7 +80,6 @@ datn <- apply(y3d, c(2, 3), sum)     # Number of captures at each trap
 tot <- apply(datn, 1, sum)           # Total captures by trap
 symbols(X, circles=tot/1, inches=F, bg="#00000022", fg=NULL, add=T)
 points(X, pch="+", cex=0.8, col="red")# Add trap locations
-
 
 # Camera trap operation mask
 KT <- read.csv("traps.csv", sep=",")
@@ -122,7 +120,7 @@ NimModel <- nimbleCode({
                                    lam0 = lam0,
                                    z = z[i])
 
-    # Model for all capture histories
+    # Model for complete capture histories
     y.full[i,1:J] ~ dPoissonVector(lambda = lam[i,1:J] * KT[1:J])
     
     # Observed capture histories
@@ -255,5 +253,6 @@ end.time - start.time2  # Time taken for sampling
 # Summarize MCMC outputs
 summary(mcmcOutput(outNim))
 diagPlot(mcmcOutput(outNim))  # Diagnostic plots
+
 
 
