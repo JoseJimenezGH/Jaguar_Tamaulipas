@@ -22,7 +22,6 @@ library(terra)      # Spatial data handling
 
 # Load additional functions and scripts
 source('Functions/SCR_functions.R')  # Custom SCR-related functions
-source("Functions/sSampler.r")       # Customized sampler
 
 ## SETTING AND PLOTING DATA
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -253,6 +252,7 @@ end.time - start.time2  # Time taken for sampling
 # Summarize MCMC outputs
 summary(mcmcOutput(outNim))
 diagPlot(mcmcOutput(outNim))  # Diagnostic plots
+
 
 
 
