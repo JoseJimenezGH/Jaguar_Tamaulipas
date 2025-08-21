@@ -84,8 +84,6 @@ KT <- read.csv("Bdata/traps.csv", sep=",")
 KT <- KT[,4:94]  # Columns representing active/inactive status
 KT <- data.matrix(KT)  # Convert to matrix
 colnames(KT) <- 1:91   # Number of sampling occasions
-(K <- ncol(KT))
-(J <- nrow(KT))
 image(1:K, 1:J, t(KT), yaxt = "n", xlab="Occasion", ylab="", cex.lab=1.25, col=topo.colors(2))
 mtext(side = 2, "Camera trap", line = 2.5, cex=1.25)
 axis(2, rev(seq(1, J, by=2)))
@@ -258,6 +256,7 @@ end.time - start.time2  # Time taken for sampling
 # Summarize MCMC outputs
 summary(mcmcOutput(outNim))
 diagPlot(mcmcOutput(outNim))  # Diagnostic plots
+
 
 
 
