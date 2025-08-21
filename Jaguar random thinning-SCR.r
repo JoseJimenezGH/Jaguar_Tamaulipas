@@ -1,7 +1,6 @@
 #==============================================================================#
 #                                                                              #
-#                  Jaguar (Pantera onca) density estimation                    #
-#    El Cielo-Sierra de Tamalave Biological Corridor (Tamaulipas, México)      #
+#      Jaguar density at the northern limit of its distribution in México      #
 #               RANDOM THINNING-SPATIAL CAPTURE-RECAPTURE                      #
 #    Zavdiel A. Manuel-De la Rosa, Leroy Soria-Díaz, Carlos Barriga-Vallejo,   #
 #           Gabriela Mendoza-Gutiérrez, Nayeli Martínez-González,              #
@@ -85,11 +84,18 @@ KT <- read.csv("Bdata/traps.csv", sep=",")
 KT <- KT[,4:94]  # Columns representing active/inactive status
 KT <- data.matrix(KT)  # Convert to matrix
 colnames(KT) <- 1:91   # Number of sampling occasions
-# Additional analysis of non-ID capture frequencies
+(K <- ncol(KT))
+(J <- nrow(KT))
+image(1:K, 1:J, t(KT), yaxt = "n", xlab="Occasion", ylab="", cex.lab=1.25, col=topo.colors(2))
+mtext(side = 2, "Camera trap", line = 2.5, cex=1.25)
+axis(2, rev(seq(1, J, by=2)))
+
+
+# Non-ID capture frequencies
 jaguar.un <- secr::read.capthist("BData/NID.txt", "BData/traps.txt", detector='count', noccasions=91)
 # Load non-ID capture history data with the same number of occasions as ID captures
 summary(jaguar.un)
-y.un <- aperm(jaguar.un, c(1, 3, 2))   # Rearrange capture data
+y.un <- aperm(jaguar.un, c(1, 3, 2))  # Rearrange capture data
 nnid <- apply(y.un, c(2, 3), sum)     # Non-ID events across traps and occasions
 sum(nnid)                             # Total number of non-ID events
 nnidd <- apply(nnid, 1, sum)          # Sum of non-ID events by trap
@@ -252,6 +258,7 @@ end.time - start.time2  # Time taken for sampling
 # Summarize MCMC outputs
 summary(mcmcOutput(outNim))
 diagPlot(mcmcOutput(outNim))  # Diagnostic plots
+
 
 
 
