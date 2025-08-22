@@ -1,6 +1,6 @@
 #==============================================================================#
 #                                                                              #
-#      Jaguar density at the northern limit of its distribution in México      #
+#    Jaguar density at the northeastern limit of its distribution in México    #
 #               RANDOM THINNING-SPATIAL CAPTURE-RECAPTURE                      #
 #    Zavdiel A. Manuel-De la Rosa, Leroy Soria-Díaz, Carlos Barriga-Vallejo,   #
 #           Gabriela Mendoza-Gutiérrez, Nayeli Martínez-González,              #
@@ -256,6 +256,7 @@ end.time - start.time2  # Time taken for sampling
 # Summarize MCMC outputs
 summary(mcmcOutput(outNim))
 diagPlot(mcmcOutput(outNim))  # Diagnostic plots
+
 
 
 
